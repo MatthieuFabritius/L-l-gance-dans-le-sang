@@ -1,26 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f; // The speed at which the character moves
+    public float moveSpeed = 5.0f;
 
-    private Vector3 movement; // The movement vector
+    private Rigidbody rb;
 
-    private void Update()
+    void Start()
     {
-        // Get the horizontal and vertical input axes
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        rb = GetComponent<Rigidbody>();
+    }
 
-        // Calculate the movement vector based on the input axes
-        movement = new Vector3(horizontal, 0f, vertical);
+    void Update()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
 
-        // Normalize the movement vector to prevent faster movement when moving diagonally
-        movement.Normalize();
+        Vector3 direction = new Vector3(horizontalInput, 0.0f, verticalInput);
+        Vector3 velocity = direction.normalized * moveSpeed;
+        Vector3 transformedVelocity = transform.TransformDirection(velocity);
 
-        // Move the character
-        transform.Translate(movement * speed * Time.deltaTime);
+        rb.MovePosition(transform.position + transformedVelocity * Time.deltaTime);
     }
 }
